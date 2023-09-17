@@ -58,6 +58,7 @@ class fonc:
 clear()
 color = fonc.configGet("color")
 username = fonc.configGet("username")
+debugMode = False
 
 validLibrary = False
 while not validLibrary:
@@ -69,33 +70,52 @@ while not validLibrary:
 
 pluginPath = 'plugins'
 plugins = [file for file in os.listdir(pluginPath) if file.endswith(".py")]
-topInformations = ["[green]Welcome to the demo <3[/green]"]
+topInformations = ["[green]Welcome to the Demo <3[/green]"]
 if os.name != "nt":
-    topInformations.append("[red]Asap is not yet tested on any OS other than Windows ~_~[/red]")
+    topInformations.append("[red]It seems you are not on Windows, Asap is not tested on your OS. Proceed at your own risk[/red]")
 
-class commands:
-    def addCommandError(commandID,reason,source):
-        commands.commandError.append(commandID)
-        commands.commandErrorDescription.append(reason)
-        commands.commandErrorSource.append(source)
+class intern:
+    class commands:
+        compiledPluginsConfig = ["plugins","Afficher les commandes compilers"]
+        def compiledPlugins():
+            print("Success compile")
+            for command in range(len(cp.cmd.commandID)):  
+                print(f"|[blue]    plugins.{cp.cmd.source[command][:-3]}.commands.{cp.cmd.commandID[command]}[/blue]")
+                print(f"|[blue]    {cp.cmd.callName[command]} < {cp.cmd.formatting[command]} - {cp.cmd.commandDescription[command]}  [/blue]")
+                print("|")
 
-    def addCommand(commandID,formatting,source,commandDescription):
-        commands.commandID.append(commandID)
-        commands.formatting.append(formatting)
-        commands.callName.append(formatting)
-        commands.source.append(source)
-        commands.commandDescription.append(commandDescription)
+            print("Failed compile")
+            for error in range(len(cp.cmd.commandError)):
+                print(f"|[red]    plugins.{cp.cmd.commandErrorSource[error]}.commands.{cp.cmd.commandError[error]} - {cp.cmd.commandErrorDescription[error]}[/red]")
+                print("|")
 
 
-    callName = []
-    formatting = []
-    source = []
-    commandID = []
-    commandDescription = []
+class cp:
+    class cmd:
+        def addCommandError(commandID,reason,source):
+            cp.cmd.commandError.append(commandID)
+            cp.cmd.commandErrorDescription.append(reason)
+            cp.cmd.commandErrorSource.append(source)
 
-    commandError = []
-    commandErrorDescription = []
-    commandErrorSource = []
+        def addCommand(commandID,formatting,callName,source,commandDescription,baseSource):
+            cp.cmd.commandID.append(commandID)
+            cp.cmd.formatting.append(formatting)
+            cp.cmd.callName.append(callName)
+            cp.cmd.source.append(source)
+            cp.cmd.commandDescription.append(commandDescription)
+            cp.cmd.baseSource.append(baseSource)
+
+
+        callName = ["plugins"]
+        formatting = [[]]
+        source = ["main.py"]
+        commandID = ["compiledPlugins"]
+        commandDescription = ["Afficher les commandes compilers"]
+        baseSource = ["^"]
+
+        commandError = []
+        commandErrorDescription = []
+        commandErrorSource = []
 
 ## Compiling Plugins
 class pluginCompiling:  
@@ -116,31 +136,42 @@ class pluginCompiling:
                 if f'{function}Config' in variables:
                     commandConfig = getattr(classCommands, variables[variables.index(f'{function}Config')])
 
+                    # Si la liste à de 1 à 2 élément, ou que c'est une simple variable
                     if len(commandConfig) > 0 and len(commandConfig) < 3 or not type(commandConfig) is list:
-                        if type(commandConfig) is list:
-                            formatting = commandConfig[0]
+
+                        if len(commandConfig) > 0:
+                            
+                            try:
+                                callName = commandConfig[0].split()[0] if type(commandConfig) is list else commandConfig.split()[0]
+                                description = commandConfig[1] if len(commandConfig) == 2 and type(commandConfig) is list else "¤"
+                                formatting = commandConfig[0].split()[1:] if type(commandConfig) is list else commandConfig.split()[1:]
+
+                                # Compatibility IF
+                                if not callName in cp.cmd.callName:
+                                    cp.cmd.addCommand(function,formatting,callName,plugin,description,source)
+                                else:
+                                    cp.cmd.addCommandError(function, f"Is incompatible with plugins.{cp.cmd.source[cp.cmd.callName.index(callName)][:-3]}.commands.{cp.cmd.callName[cp.cmd.callName.index(callName)]}", plugin[:-3])
+                            except:
+                                cp.cmd.addCommandError(function, "Unkown error, please read documentation about Config", plugin[:-3])
+
                         else:
-                            formatting = commandConfig
-                        if len(commandConfig) == 2:
-                            description = commandConfig[1]
-                        else:
-                            description = "¤"
-                        
-                        if len(formatting) > 0:
-                            commands.addCommand(function,formatting,plugin[:-3],description)
-                        elif len(formatting) < 1:
-                            commands.addCommandError(function, "Empty Format, CallName unavailable", plugin[:-3])
+                            cp.cmd.addCommandError(function, "Format is empty, callName not found", plugin[:-3])
+                    else:
+                        cp.cmd.addCommandError(function, "The config is empty or wrong", plugin[:-3])
 
                 else:
-                    ## Et BAM, fallait mettre une variable
-                    commands.addCommandError(function, f"Variable {function}Config not found", plugin[:-3])
+                    ## Variable format manquant
+                    cp.cmd.addCommandError(function, f"Variable {function}Config not found", plugin[:-3])
 
-for error in range(len(commands.commandError)):
-    print(f"[red]plugins.{commands.commandErrorSource[error]}.commands.{commands.commandError[error]} - {commands.commandErrorDescription[error]}[/red]")
-    print("")
+for topInformation in topInformations:
+    print(topInformation)
+while True:
+    print()
+    command = input(">> ")
+    command = command.lower()
 
-for command in range(len(commands.commandID)):
-    print(f"[blue]{commands.commandID[command]} :[/blue]")
-    print(f"[blue]plugins.{commands.source[command][:-3]}.commands.{commands.commandID[command]}[/blue]")
-    print(f"[blue]{commands.formatting[command]} - {commands.commandDescription[command]}  [/blue]")
-    print("")
+    if command in cp.cmd.callName:
+        index = cp.cmd.callName.index(command)
+        source = intern() if cp.cmd.baseSource[index] == "^" else cp.cmd.baseSource[index]
+        commandCall = getattr(getattr(source, "commands"), cp.cmd.commandID[index])
+        commandCall()
