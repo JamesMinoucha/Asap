@@ -7,7 +7,7 @@ Envie de m'aider ? Ajoutez moi sur discord : **jamesfrench_**
 > Asap à été tester sur Windows, si vous voulez lancer le script hors de windows (mac, linux), faite le sur VSCode
 
 > [!NOTE]
-> Asap va être tester prochainement sur linux, rester à l'écoute ^^
+> Asap va être prochainement tester sur linux, rester à l'écoute :D
 
 ## Fonctionnalités
 Démo d'asap, permet l'exécution de commandes internes et externes (plugins), pour l'instant les paramètres son indisponible et la shell est infonctionnel (risque de bug)
