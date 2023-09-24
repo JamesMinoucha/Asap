@@ -3,11 +3,8 @@ Asap, est un inviter de commande codée en Python qui permet la personnalisation
 
 Envie de m'aider ? Ajoutez moi sur discord : **jamesfrench_**
 
-> [!WARNING]
-> Asap à été tester sur Windows, si vous voulez lancer le script hors de windows (mac, linux), faite le sur VSCode
+![Frame 8](https://github.com/JamesMinoucha/Asap/assets/119378901/a42d0dec-7f1d-491d-9d74-0b3174917941)
 
-> [!NOTE]
-> Asap va être prochainement tester sur linux, rester à l'écoute :D
 
 ## Fonctionnalités
 Permet de voir le compiling et les performances d'asap, voici les commandes disponible :
