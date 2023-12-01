@@ -1,10 +1,8 @@
 <!-- <h1 align="center"><code>ASAP</code></h1> -->
 <img src="https://jamesfrench.fr/asap/banner.png" alt="ASAP: Modular Terminal">
-Asap, est un inviter de commande codée en Python qui permet la personnalisation et l'ajout de commandes. Il vise à faciliter la vie des développeurs et à faire gagner du temps aux utilisateurs lambda. Tous les plugins seront disponibles sur GitHub, vérifiés par moi-même ^-^
+ASAP is a Python-coded command prompt that enables customization and addition of commands. Its aim is to ease the lives of developers and save time for regular users. All plugins will be available on GitHub, verified by myself ^-^
 
-Envie de m'aider ? Ajoutez moi sur discord : **jamesfrench_**
+Feel like helping me out? Add me on Discord: **jamesfrench_**
 
-![Version instable à 100%](https://github.com/JamesMinoucha/Asap/assets/119378901/da9e5fc1-fbed-4d0e-9a75-1316970bcbf6)
-
-## Fonctionnalités
-Permet de voir le compiling et les performances d'asap, voici les commandes disponible :
+> [!CAUTION]
+> Asap is currently in developement
