@@ -6,3 +6,5 @@ Feel like helping me out? Add me on Discord: **jamesfrench_**
 
 > [!CAUTION]
 > Asap is currently in developement
+
+[![forthebadge](https://forthebadge.com/images/featured/featured-built-with-love.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
