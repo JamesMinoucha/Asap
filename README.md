@@ -7,6 +7,4 @@ Feel like helping me out? Add me on Discord: **jamesfrench_**
 > [!CAUTION]
 > Asap is currently in developement
 
-![stability-unlaunchable](https://jamesfrench.fr/proBadges/Unlaunchable.svg?)
-
 ![badges](https://jamesfrench.fr/proBadges/BuiltwithLove.svg) ![badges](https://jamesfrench.fr/proBadges/MadewithPython.svg)
