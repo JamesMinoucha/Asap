@@ -65,7 +65,9 @@ cls()
 while True:
     command = input('>> ')
 
-    # SHELL
+
+
+    # SHELL (COMMAND UNKNOWN AT THIS POINT)
     string = command
     splited = string.split()
     textSection = False
@@ -92,6 +94,10 @@ while True:
                 callstring = part
             elif part.lower() == 'false' or part.lower() == 'true' and sectionType == '':
                 sectionType = 'BOOLEAN'
+            elif sectionType == '' and part.isdigit():
+                sectionType = 'NUMBER'
+            elif sectionType == '':
+                sectionType = 'STRING'
 
             sectionsTypes.append(sectionType)
             result.append(section)
@@ -102,23 +108,86 @@ while True:
         firstIndex = False
         sectionType = ''
     
-    # EXECUTION
+    # EXECUTION (TRYING TO FIND THE COMMAND)
     targetCommand = {}
     if callstring != '':
         for command in compilerJson['commands']:
             if 'callString' in compilerJson['commands'][command]:
-                if callstring == compilerJson['commands'][command]['callString']:
-                    targetCommand = compilerJson['commands'][command]
-                    break
+                if isinstance(compilerJson['commands'][command]['callString'], list):
+                    if callstring in compilerJson['commands'][command]['callString']:
+                        targetCommand = compilerJson['commands'][command]
+                        break
+                else:
+                    if callstring == compilerJson['commands'][command]['callString']:
+                        targetCommand = compilerJson['commands'][command]
+                        break
+
+
     if targetCommand != {}:
-        print('FINDED COMMAND COMPILE')
-        print(targetCommand)
-        print('SPLITED COMMAND')
-        print(result)
-        print('SPLITED COMMAND TYPES')
-        print(sectionsTypes)
+        try:
+            names = []
+            types = []
+            error = False
+            typesDictionary = {
+                "[]": "STRING",
+                "()": "NUMBER",
+                "##": "BOOLEAN"
+            }
+            splitedCommandFormatting = targetCommand['formatting'].split()
+            for part in splitedCommandFormatting:
+                start = part[0]
+                end = part[-1]
+                between = part[1:-1]
+                if start+end in list(typesDictionary.keys()):
+                    detectedType = list(typesDictionary.values())[list(typesDictionary.keys()).index(start+end)]
+                    if len(between) > 0:
+                        types.append(detectedType)
+                        names.append(between)
+                    else:
+                        error = True
+                        break
+                else:
+                    error = True
+                    break
+
+            if error:
+                print('[red]La commande entré comporte des erreurs, cela n\'est pas de votre faute[/red]')
+            else:
+                finalCommand = result[1:]
+                finalTypes = sectionsTypes[1:]
+                # CALCULATING MATH PART (UNSECURE FOR THE MOMENT)
+                for math in [index for index, chaine in enumerate(finalTypes) if chaine == "MATH"]:
+                    calcul = eval(finalCommand[math])
+                    if str(calcul).isdigit():
+                        finalCommand[math] = calcul
+                        finalTypes[math] = 'NUMBER'
+
+                # VERIFY IF ARGUMENT LENGTH IS OKAY
+                errorOn = 'Null'
+                if len(finalTypes) != len(types):
+                    errorOn = f'[red]{len(finalTypes)} arguments we\'re given, but {len(types)} we\'re needed[/red]'
+
+                # VERIFY ALL ARGUMENT TYPES
+                if errorOn == 'Null':
+                    for i in range(len(finalTypes)):
+                        if finalTypes[i] != types[i]:
+                            errorOn = f'[red]Argument {i+1} must be {types[i]}, but is {finalTypes[i]}[/red]'
+                            break
+
+                if errorOn == 'Null':
+                    if os.path.exists(targetCommand['source']):
+                        source = importlib.import_module(targetCommand['source'][:-3].replace('/','.'))
+                        if hasattr(source,targetCommand['function']):
+                            function = getattr(source,targetCommand['function'])
+                            function(*finalCommand)
+                else:
+                    print(errorOn)
+        except Exception as err:
+            print(f'[red]Unknown error during execution, please share to jamesfrench_ on discord: {err}[/red]')
+
     else:
         print('[red]Commande introuvable[/red]')
+    
 
 
 print(f'Compiling: {colorTime(round(compilationEnd - compilationStart, 3),0.1,0.5)}')
