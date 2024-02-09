@@ -14,6 +14,8 @@ You can create or add existing plugins to your terminal and add commands or appl
 - No crashing
 - Plugins blacklists
 - Bug/Suggestions report
+- Libraries automatic installation
+- Event system
 
 
 Feel like helping me out? Add me on Discord: **jamesfrench_**
