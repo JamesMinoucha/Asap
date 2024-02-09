@@ -24,7 +24,9 @@ def colorTime(string, orangeStart, redStart, colors=['#86f576','#eef576','#f57c7
 
 # COMPILING
 plugins = os.listdir('plugins')
-with open('compiler.json', 'r') as compiled:
+compilerJsonPath = 'system/compiler.json'
+
+with open(compilerJsonPath, 'r') as compiled:
     compilerJson = json.load(compiled)
 
 compilationStart = time.time()
@@ -33,7 +35,7 @@ for plugin in plugins:
         if os.path.exists(f'plugins/{plugin}/index.py'):
             compilerJson['plugins'].update({plugin: {}})
             compilerJson['plugins'][plugin].update({'size': -1})
-            with open('compiler.json', 'w') as f:
+            with open(compilerJsonPath, 'w') as f:
                 json.dump(compilerJson, f, indent=4)
 
     if getDirSize(f'plugins/{plugin}') != compilerJson['plugins'][plugin]['size']:
@@ -54,17 +56,36 @@ for plugin in plugins:
                     compilerJson['commands'][commandName].update({'function': command['function']})
 
         compilerJson['plugins'][plugin]['size'] = int(getDirSize(f'plugins/{plugin}'))
-        with open('compiler.json', 'w') as f:
+        with open(compilerJsonPath, 'w') as f:
             json.dump(compilerJson, f, indent=4)
 compilationEnd = time.time()
 
 loadingEnd = time.time()
 
-# COMMAND PROMPT
+# SAVING INFORMATIONS ABOUT LOADING TIME
+with open(f'system/informations.json') as data:
+    informationsJson = json.load(data)
+
+informationsJson['lastTotalLoadingTime'] = loadingEnd - loadingStart
+informationsJson['lastCompilingTime'] = compilationEnd - compilationStart
+
+with open(f'system/informations.json', 'w') as data:
+    json.dump(informationsJson, data, indent=4)
+
+# TOP NOTIFICATIONS
+
 cls()
+notifications = [
+    "[#568ebf]Welcome to the demo 🎉[/#568ebf]"
+]
+for notification in notifications:
+    print(notification)
+print('')
+
+
+# COMMAND PROMPT
 while True:
     command = input('>> ')
-
 
 
     # SHELL (COMMAND UNKNOWN AT THIS POINT)
@@ -151,7 +172,7 @@ while True:
                     break
 
             if error:
-                print('[red]La commande entré comporte des erreurs, cela n\'est pas de votre faute[/red]')
+                print('[red]Command formatting is incorrect, that\'s not you\'re fault[/red]')
             else:
                 finalCommand = result[1:]
                 finalTypes = sectionsTypes[1:]
@@ -186,9 +207,5 @@ while True:
             print(f'[red]Unknown error during execution, please share to jamesfrench_ on discord: {err}[/red]')
 
     else:
-        print('[red]Commande introuvable[/red]')
-    
-
-
-print(f'Compiling: {colorTime(round(compilationEnd - compilationStart, 3),0.1,0.5)}')
-print(f'Total: {colorTime(round(loadingEnd - loadingStart, 3),0.3,1)}')
+        print('[red]Command does not exist[/red]')
+    print('')
