@@ -1,0 +1,33 @@
+{
+    "plugins": {
+        "math": {
+            "size": 629
+        }
+    },
+    "commands": {
+        "addition": {
+            "callString": "add",
+            "formatting": "(a) (b)",
+            "description": "Add two numbers",
+            "source": "plugins/math/index.py",
+            "function": "addition"
+        },
+        "clear": {
+            "callString": [
+                "clear",
+                "cls"
+            ],
+            "formatting": "",
+            "description": "Clear the terminal",
+            "source": "system/basecommands.py",
+            "function": "clear"
+        },
+        "loadingTimes": {
+            "callString": "loading",
+            "formatting": "",
+            "description": "Print information about loading times of Asap",
+            "source": "system/basecommands.py",
+            "function": "loadingTimes"
+        }
+    }
+}
