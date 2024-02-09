@@ -1,6 +1,20 @@
 <!-- <h1 align="center"><code>ASAP</code></h1> -->
 <img src="https://jamesfrench.fr/asap/banner.png" alt="ASAP: Modular Terminal">
-ASAP is a Python-coded command prompt that enables customization and addition of commands. Its aim is to ease the lives of developers and save time for regular users. All plugins will be available on GitHub, verified by myself ^-^
+ASAP is a Python-coded command line tool that allows for customization and addition of commands. 
+You can create or add existing plugins to your terminal and add commands or applications. This simplifies repetitive and tedious tasks.
+
+## Features
+- Powerful and simple shell
+- Adding plugins is really simple
+- A fast launching terminal
+- Optimised plugin compiler
+
+## Coming Soon
+- Incompatibility support
+- No crashing
+- Plugins blacklists
+- Bug/Suggestions report
+
 
 Feel like helping me out? Add me on Discord: **jamesfrench_**
 
