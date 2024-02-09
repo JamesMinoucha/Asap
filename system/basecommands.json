@@ -1,0 +1,16 @@
+{
+    "clear": {
+        "callString": ["clear","cls"],
+        "formatting": "",
+        "description": "Clear the terminal",
+        "source": "system/basecommands.py",
+        "function": "clear"
+    },
+    "loadingTimes": {
+        "callString": "loading",
+        "formatting": "",
+        "description": "Print information about loading times of Asap",
+        "source": "system/basecommands.py",
+        "function": "loadingTimes"
+    }
+}
