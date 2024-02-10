@@ -143,7 +143,6 @@ while True:
                         targetCommand = compilerJson['commands'][command]
                         break
 
-
     if targetCommand != {}:
         try:
             names = []
@@ -187,6 +186,15 @@ while True:
                 errorOn = 'Null'
                 if len(finalTypes) != len(types):
                     errorOn = f'[red]{len(finalTypes)} arguments we\'re given, but {len(types)} we\'re needed[/red]'
+
+                # VERIFY IF STRING ARE CORRECT
+                for string in [index for index, chaine in enumerate(finalTypes) if chaine == "STRING"]:
+                    if '"' in finalCommand[string]:
+                        if finalCommand[string].count('"') != 2 or finalCommand[string][-1] != '"':
+                            errorOn = f'[red]Argument {string+1} string is not valid[/red]'
+                if errorOn == 'Null':
+                    if ' '.join(finalCommand).count('"')%2 != 0:
+                        errorOn = f'String sequence not closed'
 
                 # VERIFY ALL ARGUMENT TYPES
                 if errorOn == 'Null':
