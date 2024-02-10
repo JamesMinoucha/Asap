@@ -18,7 +18,7 @@ You can create or add existing plugins to your terminal and add commands or appl
 - Incompatibility support **(coming next)**
 - Plugins blacklists
 - Bug/Suggestions report
-- Libraries automatic installation
+- Libraries automatic installation **(coming next)**
 - Event system
 - Simple Math 
 
