@@ -10,12 +10,12 @@ You can create or add existing plugins to your terminal and add commands or appl
 - Optimised plugin compiler
 
 ## Coming Soon
-- Incompatibility support
-- No crashing
+- Incompatibility support **(coming next)**
 - Plugins blacklists
 - Bug/Suggestions report
 - Libraries automatic installation
 - Event system
+- Simple Math 
 
 
 Feel like helping me out? Add me on Discord: **jamesfrench_**
