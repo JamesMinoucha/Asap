@@ -10,6 +10,12 @@ You can create or add existing plugins to your terminal and add commands or appl
 ## Quick Start
 1. Install the [latest release](https://github.com/JamesMinoucha/Asap/releases/tag/patch) and decompress it
 2. Create a shortcut on your desktop, and connect it to the launcher.bat in the Asap folder
+3. Plugins are coming soon so stay tuned!
+
+## Next Features
+- Plugin conflict manager **「WIP」**
+- Optional command argument
+- Simple math
 
 ## Contact me
 Feel like helping me out? A bug? Add me on Discord: **jamesfrench_**
