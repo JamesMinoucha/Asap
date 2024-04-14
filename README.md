@@ -10,14 +10,19 @@ This terminal uses its own built-in shell, and is simple to use. Feel like makin
 > Asap is still in development, problems may occur, and there is a high probability that I already know about it.
 
 ## Next Features
-- [x] Conflict management (not uploaded yet)
-- [ ] Optional argument
-- [ ] Local variables
-- [ ] Built-in math system
-- [ ] Library's automatic installation
-- [ ] Events that can be detected by plugins
-- [ ] More customizations settings
-- [ ] Built-in help menu
+- Conflict management (coded but not uploaded
+- Optional argument
+- Local variables
+- Built-in math system
+- Library's automatic installation
+- Events that can be detected by plugins
+- More customizations settings
+- Built-in help menu
+  
+## Contact
+
+Feel free to contact me on discord: jamesfrench_
+
 <br/>
 
 ![badges](http://ForTheBadge.com/images/badges/built-with-love.svg) ![badges](http://ForTheBadge.com/images/badges/made-with-python.svg) ![badges](https://img.shields.io/badge/Visual_Studio_Code-0078D4?style=for-the-badge&logo=visual%20studio%20code&logoColor=white)
