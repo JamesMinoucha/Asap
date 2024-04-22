@@ -8,7 +8,18 @@ This terminal uses its own built-in shell, and is simple to use. Feel like makin
 <br/><br/>
 
 > [!NOTE]
-> Asap is still in development, problems may occur, and there is a high probability that I already know about it.
+> Asap is still in development, problems may occur.
+
+## Conflit Update (0.0.1)
+Hey, I'm posting the conflict update. This update prevents crashes when there are plugins with the same commands, this new part of code is a good base for publishing the first version of asap (0.0.1).
+
+## Terminal Features
+- Shell
+  - Argument Type
+  - String Literals
+- Compiler
+  - Conflits Manager
+  - New Optimized Compiler  
 
 ## Next Features
 - Conflict management (coded but not uploaded
