@@ -3,8 +3,10 @@
 ASAP is a Python-coded command line tool that allows for customization and addition of commands. 
 You can create or add existing plugins to your terminal and add commands or applications. This simplifies repetitive and tedious tasks.‎
 <br/><br/>
+
 This terminal uses its own built-in shell, and is simple to use. Feel like making a command? That's very simple, no need to make your own complex algorithm to understand the user input, you can create parameters like that `command [stringArgument] (intArgument)`. Asap will enforce the arguments of your command for you.
 <br/><br/>
+
 > [!NOTE]
 > Asap is still in development, problems may occur.
 
