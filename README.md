@@ -10,7 +10,7 @@ This terminal uses its own built-in shell, and is simple to use. Feel like makin
 > [!NOTE]
 > Asap is still in development, problems may occur.
 
-## Conflit Update (0.0.1)
+## Conflit Update (0.0.1) (Alpha)
 Hey, I'm posting the conflict update. This update prevents crashes when there are plugins with the same commands, this new part of code is a good base for publishing the first version of asap (0.0.1).
 
 ## Terminal Features
@@ -34,6 +34,8 @@ Hey, I'm posting the conflict update. This update prevents crashes when there ar
 ## Contact
 
 Feel free to contact me on discord: jamesfrench_
+
+A bug? A suggestion? Post it [here](https://github.com/JamesMinoucha/Asap/issues/new)
 
 <br/>
 
