@@ -7,6 +7,14 @@ import json
 import importlib
 import sys
 
+## IL FAUT AJOUTER LES VALEURS DES PARAMETRES OPTIONNEL EN NULL (SINON MARCHE PAS)
+## IL FAUT AJOUTER LES VALEURS DES PARAMETRES OPTIONNEL EN NULL (SINON MARCHE PAS)
+## IL FAUT AJOUTER LES VALEURS DES PARAMETRES OPTIONNEL EN NULL (SINON MARCHE PAS)
+
+#  - Optional Argument **(WIP)**
+#  - Math Detection and Result **(WIP)**
+
+
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -19,6 +27,7 @@ def getDirSize(path='.'):
             elif entry.is_dir():
                 total += getDirSize(entry.path)
     return total
+
 def colorTime(string, orangeStart, redStart, colors=['#86f576','#eef576','#f57c76']):
     return f'[{colors[0] if int(string) < orangeStart else colors[1] if int(string) < redStart else colors[2]}]{string}[{colors[0] if int(string) < orangeStart else colors[1] if int(string) < redStart else colors[2]}]'
 
@@ -30,7 +39,17 @@ with open(compilerJsonPath, 'r') as compiled:
     compilerJson = json.load(compiled)
 
 compilationStart = time.time()
+
+pluginConflicts = [i.split('/')[0] for i in compilerJson['conflicts'].keys()]
+
+# This 3 line prevent keeping conflicts alive without reasons
+compilerJson['conflicts'] = {}
+with open(compilerJsonPath, 'w') as f:
+    json.dump(compilerJson, f, indent=4)
+
 for plugin in plugins:
+
+    # Define new plugin
     if not plugin in compilerJson['plugins']:
         if os.path.exists(f'plugins/{plugin}/index.py'):
             compilerJson['plugins'].update({plugin: {}})
@@ -38,26 +57,66 @@ for plugin in plugins:
             with open(compilerJsonPath, 'w') as f:
                 json.dump(compilerJson, f, indent=4)
 
-    if getDirSize(f'plugins/{plugin}') != compilerJson['plugins'][plugin]['size']:
+    # Compiling
+    if getDirSize(f'plugins/{plugin}') != compilerJson['plugins'][plugin]['size'] or plugin in pluginConflicts:
         print(f'Compiling plugin "{plugin}"...')
+
+        # Command
         if os.path.exists(f'plugins/{plugin}/commands.json'):
+
+            commandsAddition = {}
+
             with open(f'plugins/{plugin}/commands.json') as data:
                 commandsJson = json.load(data)
 
             for commandName in commandsJson:
                 command = commandsJson[commandName]
-                if 'callString' in command and 'formatting' in command and 'source' in command and 'function' in command:
-                    compilerJson['commands'].update({commandName: {}})
-                    compilerJson['commands'][commandName].update({'callString': command['callString']})
-                    compilerJson['commands'][commandName].update({'formatting': command['formatting']})
-                    if 'description' in command:
-                        compilerJson['commands'][commandName].update({'description': command['description']})
-                    compilerJson['commands'][commandName].update({'source': f'plugins/{plugin}/{command["source"]}'})
-                    compilerJson['commands'][commandName].update({'function': command['function']})
+
+                conflict = False       
+                # Conflict detection         
+                for i in range(len(compilerJson['commands'])):
+                    incompatibilityPathName = f"{plugin}/{list(compilerJson['commands'].values())[i]['pluginName']}"
+                    
+                    if not list(compilerJson['commands'].values())[i]['pluginName'] == plugin:
+                        # Command name
+                        if list(compilerJson['commands'].keys())[i] == commandName:
+                            if not incompatibilityPathName in compilerJson['conflicts']:
+                                compilerJson['conflicts'].update({incompatibilityPathName: {
+                                    "callStrings": [], "commandNames": []
+                                }})
+                            if not commandName in compilerJson['conflicts'][incompatibilityPathName]['commandNames']:
+                                compilerJson['conflicts'][incompatibilityPathName]['commandNames'].append(commandName)
+                            conflict = True
+                        # CallString
+                        if list(compilerJson['commands'].values())[i]['callString'] == command['callString']:
+                            if not incompatibilityPathName in compilerJson['conflicts']:
+                                compilerJson['conflicts'].update({incompatibilityPathName: {
+                                    "callStrings": [], "commandNames": []
+                                }})
+                            if not command['callString'] in compilerJson['conflicts'][incompatibilityPathName]['callStrings']:
+                                compilerJson['conflicts'][incompatibilityPathName]['callStrings'].append(command['callString'])
+                            conflict = True
+
+                if not conflict:
+                    if 'callString' in command and 'formatting' in command and 'source' in command and 'function' in command:
+                            commandsAddition.update({commandName: {}})
+                            commandsAddition[commandName].update({
+                                "callString": command['callString'],
+                                "formatting": command['formatting'],
+                                "source": f'plugins/{plugin}/{command["source"]}',
+                                "function": command['function'],
+                                "pluginName": plugin
+                            })
+                            if 'description' in command:
+                                commandsAddition[commandName].update({"description": command['description']})
+            compilerJson['commands'].update(commandsAddition)
+
+
 
         compilerJson['plugins'][plugin]['size'] = int(getDirSize(f'plugins/{plugin}'))
         with open(compilerJsonPath, 'w') as f:
             json.dump(compilerJson, f, indent=4)
+pluginConflicts = [i.split('/')[0] for i in compilerJson['conflicts'].keys()]
 compilationEnd = time.time()
 
 loadingEnd = time.time()
@@ -132,21 +191,40 @@ while True:
     # EXECUTION (TRYING TO FIND THE COMMAND)
     targetCommand = {}
     if callstring != '':
+        pluginToPop = []
+        commandsToPop = []
         for command in compilerJson['commands']:
+
+            # Check if a callString is here
             if 'callString' in compilerJson['commands'][command]:
-                if isinstance(compilerJson['commands'][command]['callString'], list):
-                    if callstring in compilerJson['commands'][command]['callString']:
-                        targetCommand = compilerJson['commands'][command]
-                        break
-                else:
-                    if callstring == compilerJson['commands'][command]['callString']:
-                        targetCommand = compilerJson['commands'][command]
-                        break
+                
+                # If this the callString we're searching
+                callStringSearched = compilerJson['commands'][command]['callString'] if isinstance(compilerJson['commands'][command]['callString'], list) else [compilerJson['commands'][command]['callString']]
+                if callstring in callStringSearched:
+
+                    # Check if the plugin still existing lol
+                    if compilerJson['commands'][command]['pluginName'] in plugins or compilerJson['commands'][command]['pluginName'] == '/system':
+                        # Check if the command isnt in conflict
+                        if not compilerJson['commands'][command]['pluginName'] in pluginConflicts:
+                            targetCommand = compilerJson['commands'][command]
+                            break
+                    else:
+                        pluginToPop.append(command)
+                        commandsToPop.append(command)
+
+        for plugin in pluginToPop:
+            compilerJson['plugins'].pop(compilerJson['commands'][plugin]['pluginName'], None)
+        for command in commandsToPop:
+            compilerJson['commands'].pop(command, None)
+
+        with open(compilerJsonPath, 'w') as f:
+            json.dump(compilerJson, f, indent=4)
 
     if targetCommand != {}:
         try:
             names = []
             types = []
+            optionals = []
             error = False
             typesDictionary = {
                 "[]": "STRING",
@@ -157,12 +235,14 @@ while True:
             for part in splitedCommandFormatting:
                 start = part[0]
                 end = part[-1]
-                between = part[1:-1]
+                optional = True if part[1] == "!" else False
+                between = part[1 + (1 if optional else 0):-1]
                 if start+end in list(typesDictionary.keys()):
                     detectedType = list(typesDictionary.values())[list(typesDictionary.keys()).index(start+end)]
                     if len(between) > 0:
                         types.append(detectedType)
                         names.append(between)
+                        optionals.append(optional)
                     else:
                         error = True
                         break
@@ -184,7 +264,7 @@ while True:
 
                 # VERIFY IF ARGUMENT LENGTH IS OKAY
                 errorOn = 'Null'
-                if len(finalTypes) != len(types):
+                if not len(finalTypes) >= optionals.count(False) and len(finalTypes) <= (optionals.count(False) + optionals.count(True)):
                     errorOn = f'[red]{len(finalTypes)} arguments we\'re given, but {len(types)} we\'re needed[/red]'
 
                 # VERIFY IF STRING ARE CORRECT
@@ -208,7 +288,10 @@ while True:
                         source = importlib.import_module(targetCommand['source'][:-3].replace('/','.'))
                         if hasattr(source,targetCommand['function']):
                             function = getattr(source,targetCommand['function'])
-                            function(*finalCommand)
+                            try:
+                                function(*finalCommand)
+                            except Exception as err:
+                                print(f'[red]An error occurred during execution: {err}.[/red]')
                 else:
                     print(errorOn)
         except Exception as err:

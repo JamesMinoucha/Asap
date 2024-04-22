@@ -1,16 +1,40 @@
 {
     "plugins": {
+        "youtube": {
+            "size": 5189
+        },
         "math": {
-            "size": 629
+            "size": 995
+        },
+        "mathV2": {
+            "size": 1008
         }
     },
+    "conflicts": {},
     "commands": {
+        "mp3": {
+            "callString": "mp3",
+            "formatting": "[url]",
+            "description": "Download the MP3 of a youtube video",
+            "source": "plugins/youtube/index.py",
+            "function": "downloadvideoaudio",
+            "pluginName": "youtube"
+        },
         "addition": {
             "callString": "add",
             "formatting": "(a) (b)",
-            "description": "Add two numbers",
             "source": "plugins/math/index.py",
-            "function": "addition"
+            "function": "addition",
+            "pluginName": "math",
+            "description": "Add two number"
+        },
+        "additionV2": {
+            "callString": "addV2",
+            "formatting": "(a) (b)",
+            "source": "plugins/mathV2/index.py",
+            "function": "addition",
+            "pluginName": "mathV2",
+            "description": "Add two number"
         },
         "clear": {
             "callString": [
@@ -20,6 +44,7 @@
             "formatting": "",
             "description": "Clear the terminal",
             "source": "system/basecommands.py",
+            "pluginName": "/system",
             "function": "clear"
         },
         "loadingTimes": {
@@ -27,7 +52,16 @@
             "formatting": "",
             "description": "Print information about loading times of Asap",
             "source": "system/basecommands.py",
+            "pluginName": "/system",
             "function": "loadingTimes"
+        },
+        "helpCommand": {
+            "callString": "help",
+            "formatting": "",
+            "description": "Get all commands of asap and plugins",
+            "source": "system/basecommands.py",
+            "pluginName": "/system",
+            "function": "help"
         }
     }
 }
