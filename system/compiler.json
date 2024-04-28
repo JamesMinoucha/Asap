@@ -4,10 +4,7 @@
             "size": 5189
         },
         "math": {
-            "size": 995
-        },
-        "mathV2": {
-            "size": 1008
+            "size": 659
         }
     },
     "conflicts": {},
@@ -22,18 +19,10 @@
         },
         "addition": {
             "callString": "add",
-            "formatting": "(a) (b)",
+            "formatting": "(a) (!b)",
             "source": "plugins/math/index.py",
             "function": "addition",
             "pluginName": "math",
-            "description": "Add two number"
-        },
-        "additionV2": {
-            "callString": "addV2",
-            "formatting": "(a) (b)",
-            "source": "plugins/mathV2/index.py",
-            "function": "addition",
-            "pluginName": "mathV2",
             "description": "Add two number"
         },
         "clear": {

@@ -3,6 +3,8 @@ import time
 loadingStart = time.time()
 from rich import print
 import os
+import itertools
+import traceback
 import json
 import importlib
 import sys
@@ -11,8 +13,6 @@ import sys
 ## IL FAUT AJOUTER LES VALEURS DES PARAMETRES OPTIONNEL EN NULL (SINON MARCHE PAS)
 ## IL FAUT AJOUTER LES VALEURS DES PARAMETRES OPTIONNEL EN NULL (SINON MARCHE PAS)
 
-#  - Optional Argument **(WIP)**
-#  - Math Detection and Result **(WIP)**
 
 
 def cls():
@@ -135,20 +135,31 @@ with open(f'system/informations.json', 'w') as data:
 
 cls()
 notifications = [
-    "[#568ebf]Welcome to the demo 🎉[/#568ebf]"
+    "[#568ebf]Welcome to the alpha 🎉 (0.0.2)[/#568ebf]"
 ]
 for notification in notifications:
     print(notification)
 print('')
 
-
 # COMMAND PROMPT
 while True:
-    command = input('>> ')
+    localVariables = informationsJson
+    shellVariables = {}
 
+    global commandPrompt
+    commandPrompt = ''
+
+    def prompt():
+        global commandPrompt
+        try:
+            commandPrompt = input('>> ')
+        except KeyboardInterrupt:
+            print('\n[red]Ctrl + C is not yet implemented in Asap[/red]\n')
+            prompt()
+    prompt()        
 
     # SHELL (COMMAND UNKNOWN AT THIS POINT)
-    string = command
+    string = commandPrompt
     splited = string.split()
     textSection = False
     mathSection = False
@@ -163,9 +174,9 @@ while True:
             if part[i] == '"' and part[i - 1] != '\\':
                 textSection = (not textSection)
                 sectionType = "STRING"
-            if part[i] == '(' or part[i] == ')' and (not textSection):
-                mathSection = (not mathSection)
-                sectionType = "MATH"
+            #if part[i] == '(' or part[i] == ')' and (not textSection):
+            #    mathSection = (not mathSection)
+            #    sectionType = "MATH"
             section = f'{section}{part[i]}'
 
         if (not textSection) and (not mathSection):
@@ -180,7 +191,7 @@ while True:
                 sectionType = 'STRING'
 
             sectionsTypes.append(sectionType)
-            result.append(section)
+            result.append(section if not sectionType == 'NUMBER' else int(section))
             section = ''
 
         if textSection:
@@ -225,7 +236,9 @@ while True:
             names = []
             types = []
             optionals = []
+            startOfOptional = False
             error = False
+            errorsNames = []
             typesDictionary = {
                 "[]": "STRING",
                 "()": "NUMBER",
@@ -236,6 +249,12 @@ while True:
                 start = part[0]
                 end = part[-1]
                 optional = True if part[1] == "!" else False
+                if optional:
+                    startOfOptional = True
+                elif startOfOptional:
+                    error = True
+                    errorsNames.append("Optional arguments must be at the end.")
+                    break
                 between = part[1 + (1 if optional else 0):-1]
                 if start+end in list(typesDictionary.keys()):
                     detectedType = list(typesDictionary.values())[list(typesDictionary.keys()).index(start+end)]
@@ -245,27 +264,34 @@ while True:
                         optionals.append(optional)
                     else:
                         error = True
+                        errorsNames.append("Arguments need a name.")
                         break
                 else:
                     error = True
+                    errorsNames.append("Arguments must have a valid type")
                     break
 
             if error:
-                print('[red]Command formatting is incorrect, that\'s not you\'re fault[/red]')
+                print(f'[red]Command formatting is incorrect, that\'s not you\'re fault. Errors: {", ".join(errorsNames)}[/red]')
             else:
+                # Arguments and Errors verification, very important!
+
                 finalCommand = result[1:]
                 finalTypes = sectionsTypes[1:]
+                finalArguments = dict(itertools.zip_longest(names,finalCommand,fillvalue=None))
+
                 # CALCULATING MATH PART (UNSECURE FOR THE MOMENT)
-                for math in [index for index, chaine in enumerate(finalTypes) if chaine == "MATH"]:
-                    calcul = eval(finalCommand[math])
-                    if str(calcul).isdigit():
-                        finalCommand[math] = calcul
-                        finalTypes[math] = 'NUMBER'
+                #for math in [index for index, chaine in enumerate(finalTypes) if chaine == "MATH"]:
+                #    calcul = eval(finalCommand[math])
+                #    if str(calcul).isdigit():
+                #        finalCommand[math] = calcul
+                #        finalTypes[math] = 'NUMBER'
 
                 # VERIFY IF ARGUMENT LENGTH IS OKAY
                 errorOn = 'Null'
-                if not len(finalTypes) >= optionals.count(False) and len(finalTypes) <= (optionals.count(False) + optionals.count(True)):
-                    errorOn = f'[red]{len(finalTypes)} arguments we\'re given, but {len(types)} we\'re needed[/red]'
+                if len(finalTypes) < optionals.count(False) or len(finalTypes) > len(optionals):
+                    tooHigh = len(finalTypes) > len(optionals)
+                    errorOn = f'[red]{len(finalTypes)} arguments we\'re given, but {len(types) if tooHigh else len(types) - optionals.count(True)} we\'re needed[/red]'
 
                 # VERIFY IF STRING ARE CORRECT
                 for string in [index for index, chaine in enumerate(finalTypes) if chaine == "STRING"]:
@@ -273,7 +299,7 @@ while True:
                         if finalCommand[string].count('"') != 2 or finalCommand[string][-1] != '"':
                             errorOn = f'[red]Argument {string+1} string is not valid[/red]'
                 if errorOn == 'Null':
-                    if ' '.join(finalCommand).count('"')%2 != 0:
+                    if ' '.join(map(str,finalCommand)).count('"')%2 != 0:
                         errorOn = f'String sequence not closed'
 
                 # VERIFY ALL ARGUMENT TYPES
@@ -282,20 +308,24 @@ while True:
                         if finalTypes[i] != types[i]:
                             errorOn = f'[red]Argument {i+1} must be {types[i]}, but is {finalTypes[i]}[/red]'
                             break
-
+                
+                # Final Execution of function
                 if errorOn == 'Null':
                     if os.path.exists(targetCommand['source']):
                         source = importlib.import_module(targetCommand['source'][:-3].replace('/','.'))
                         if hasattr(source,targetCommand['function']):
                             function = getattr(source,targetCommand['function'])
                             try:
-                                function(*finalCommand)
+                                # Just Here!
+                                function(finalArguments)
                             except Exception as err:
-                                print(f'[red]An error occurred during execution: {err}.[/red]')
+                                print(f'[red]An error occurred during execution of this command:[/red]')
+                                traceback.print_exc()
                 else:
                     print(errorOn)
         except Exception as err:
-            print(f'[red]Unknown error during execution, please share to jamesfrench_ on discord: {err}[/red]')
+            print(f'[red]Unknown error during execution of Asap, please share to jamesfrench_ on discord:[/red]')
+            traceback.print_exc()
 
     else:
         print('[red]Command does not exist[/red]')

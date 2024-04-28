@@ -1,8 +1,10 @@
 {
     "profil": {
         "username": "Unknown",
-        "mainColor": "Unknown"
+        "mainColor": "Unknown",
+        "mainFolder": false,
+        "sessionCount": 0
     },
-    "lastTotalLoadingTime": 0.0338437557220459,
-    "lastCompilingTime": 0.003002166748046875
+    "lastTotalLoadingTime": 0.029810428619384766,
+    "lastCompilingTime": 0.0
 }
