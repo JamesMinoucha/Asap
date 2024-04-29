@@ -16,20 +16,18 @@ Hello, optional arguments are now here! You can make your argument optional by p
 ## Terminal Features  
 - Shell
   - Argument Type
+  - Optional Arguments
   - String Literals
 - Compiler
   - Conflits Manager
   - New Optimized Compiler  
 
 ## Next Features
-- Conflict management (coded but not uploaded
-- Optional argument
-- Local variables
 - Built-in math system
-- Library's automatic installation
+- Library's automatic installation (next release)
 - Events that can be detected by plugins
 - More customizations settings
-- Built-in help menu
+- Built-in help menu (already here but not finish)
   
 ## Contact
 
