@@ -10,8 +10,8 @@ This terminal uses its own built-in shell, and is simple to use. Feel like makin
 > [!NOTE]
 > Asap is still in development, problems may occur.
 
-## Conflit Update (0.0.1) (Alpha)
-Hey, I'm posting the conflict update. This update prevents crashes when there are plugins with the same commands, this new part of code is a good base for publishing the first version of asap (0.0.1).
+## Optional Arguments Update (0.0.2) (Alpha)
+Hello, optional arguments are now here! You can make your argument optional by putting a "!" at the start right before the type sequence, like that: [!argument]. Make sure to put the argument after the normal arguments! This update adds more detailed errors, which can be really useful for debugging. [Changelog](https://github.com/JamesMinoucha/Asap/releases/tag/v0.0.2-alpha) here!
 
 ## Terminal Features  
 - Shell
