@@ -1,9 +1,0 @@
-{
-    "addition": {
-        "callString": "add",
-        "formatting": "(a) (!b)",
-        "description": "Add two number",
-        "source": "index.py",
-        "function": "addition"
-    }
-}
